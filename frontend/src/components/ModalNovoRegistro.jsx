@@ -26,11 +26,11 @@ function ModalNovoRegistro({ onClose }) {
 
   const atualizar = (campo) => (e) => setForm((f) => ({ ...f, [campo]: e.target.value }));
 
-  const salvar = (e) => {
+  const salvar = async (e) => {
     e.preventDefault();
     if (!form.data || !form.atividade || !form.horas) return;
-    addRegistroDiario(form);
-    onClose();
+    const ok = await addRegistroDiario(form);
+    if (ok) onClose();
   };
 
   return (
@@ -94,8 +94,8 @@ function ModalNovoRegistro({ onClose }) {
         <label style={estiloLabel}>Atividade</label>
         <input type="text" value={form.atividade} onChange={atualizar("atividade")} placeholder="Ex: Reunião de alinhamento" style={estiloInput} />
 
-        <label style={estiloLabel}>Horas dedicadas</label>
-        <input type="number" value={form.horas} onChange={atualizar("horas")} placeholder="Ex: 4" style={estiloInput} />
+        <label style={estiloLabel}>Horas dedicadas (1 a 8)</label>
+        <input type="number" min="1" max="8" value={form.horas} onChange={atualizar("horas")} placeholder="Ex: 4" style={estiloInput} />
 
         <label style={estiloLabel}>Descrição</label>
         <textarea

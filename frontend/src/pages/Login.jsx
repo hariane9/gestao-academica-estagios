@@ -1,6 +1,7 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useApp } from "../context/AppContext";
+import { extrairErro } from "../services/api";
 import ifpbLogo from "../assets/ifpb-logo.png";
 
 const estiloLabel = {
@@ -29,8 +30,9 @@ function Login() {
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
   const [erro, setErro] = useState("");
+  const [enviando, setEnviando] = useState(false);
 
-  const entrar = (e) => {
+  const entrar = async (e) => {
     e.preventDefault();
     if (!email.trim() || !senha.trim()) {
       setErro("Preencha e-mail e senha para continuar.");
@@ -40,12 +42,19 @@ function Login() {
       setErro("Informe um e-mail válido.");
       return;
     }
-    if (senha.length < 4) {
-      setErro("Senha inválida. Verifique e tente novamente.");
-      return;
+    setEnviando(true);
+    try {
+      await login(email.trim(), senha, role);
+      navigate("/dashboard");
+    } catch (err) {
+      if (err.response) {
+        setErro(extrairErro(err, "E-mail ou senha inválidos."));
+      } else {
+        setErro("Não foi possível conectar ao servidor. Verifique se o backend está rodando.");
+      }
+    } finally {
+      setEnviando(false);
     }
-    login(role);
-    navigate("/dashboard");
   };
 
   const estiloTab = (ativo) => ({
@@ -255,11 +264,20 @@ function Login() {
             </div>
           )}
 
-          <button type="submit" className="btn-primary" style={{ width: "100%", padding: "14px", fontSize: "15px" }}>
-            Entrar
+          <button
+            type="submit"
+            disabled={enviando}
+            className="btn-primary"
+            style={{ width: "100%", padding: "14px", fontSize: "15px", opacity: enviando ? 0.7 : 1 }}
+          >
+            {enviando ? "Entrando..." : "Entrar"}
           </button>
 
-          <div style={{ textAlign: "center", fontSize: "13px", color: "#94A3B8", marginTop: "24px" }}>
+          <div style={{ textAlign: "center", fontSize: "13.5px", color: "#64748B", marginTop: "20px" }}>
+            Não tem conta? <Link to="/cadastro">Criar conta</Link>
+          </div>
+
+          <div style={{ textAlign: "center", fontSize: "13px", color: "#94A3B8", marginTop: "16px" }}>
             Instituto Federal da Paraíba · Coordenação de Estágios
           </div>
         </form>

@@ -34,6 +34,44 @@ export function notaColor(nota) {
   return nota >= 9 ? "#4F7300" : nota >= 7 ? "#2952A3" : "#966400";
 }
 
+const MESES = [
+  "Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho",
+  "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"
+];
+
+// "DD/MM/AAAA" -> "AAAA-MM-DD" (formato aceito pela API)
+export function brParaISO(dataBR) {
+  const partes = String(dataBR).split("/");
+  if (partes.length !== 3) return dataBR;
+  const [d, m, a] = partes;
+  return `${a}-${m.padStart(2, "0")}-${d.padStart(2, "0")}`;
+}
+
+// "AAAA-MM-DD" (ou datetime) -> "DD/MM/AAAA"
+export function isoParaBR(iso) {
+  if (!iso) return "";
+  const [a, m, d] = String(iso).slice(0, 10).split("-");
+  if (!d) return String(iso);
+  return `${d}/${m}/${a}`;
+}
+
+// "AAAA-MM-DD" -> "Julho 2026" (rótulo de período das avaliações)
+export function periodoDe(iso) {
+  if (!iso) return "";
+  const [a, m] = String(iso).slice(0, 10).split("-");
+  const idx = parseInt(m, 10) - 1;
+  return (MESES[idx] || "") + " " + a;
+}
+
+export function hojeISO() {
+  const d = new Date();
+  return (
+    d.getFullYear() + "-" +
+    String(d.getMonth() + 1).padStart(2, "0") + "-" +
+    String(d.getDate()).padStart(2, "0")
+  );
+}
+
 export function formatToday() {
   const d = new Date();
   return (

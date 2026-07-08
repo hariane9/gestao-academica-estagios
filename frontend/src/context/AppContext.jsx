@@ -10,20 +10,90 @@ import {
   perfilAluno,
   perfilSupervisor
 } from "../services/mockData";
-import { formatToday } from "../utils/helpers";
+import {
+  fazerLogin,
+  listarVagas,
+  candidatarVaga,
+  obterEstagioAtual,
+  listarAtividades,
+  registrarAtividade,
+  eliminarAtividade,
+  listarAvaliacoes,
+  lancarAvaliacao,
+  extrairLista,
+  extrairErro,
+  ESTAGIO_PADRAO
+} from "../services/api";
+import { formatToday, brParaISO, isoParaBR, periodoDe, hojeISO } from "../utils/helpers";
 
 const AppContext = createContext(null);
 
+// ---- Mapeamentos: formato da API -> formato usado nas telas ----
+// GET /vagas: { id, titulo, descricao, requisitos, localizacao, criado_em, empresa }
+const mapVaga = (v) => ({
+  id: v.id,
+  empresa: v.empresa || v.nome_comercial || (v.empresa_id ? "Empresa #" + v.empresa_id : "Empresa"),
+  area: v.titulo || "",
+  descricao: v.descricao || "",
+  requisitos: v.requisitos || "",
+  local: v.localizacao,
+  modalidade: v.modalidade,
+  bolsa: v.bolsa,
+  carga: v.carga,
+  vagasDisp: v.vagasDisp,
+  candidatado: false
+});
+
+// GET /atividades: { id, descricao, horas_dedicadas, data_registro }
+const mapAtividade = (a) => ({
+  id: a.id,
+  data: isoParaBR(a.data_registro),
+  atividade: a.descricao || "Atividade",
+  horas: String(a.horas_dedicadas ?? 0),
+  descricao: "",
+  doServidor: true
+});
+
+// GET /avaliacoes: { id, nota, feedback, data_avaliacao }
+const mapAvaliacaoAluno = (a) => ({
+  id: a.id,
+  periodo: periodoDe(a.data_avaliacao),
+  supervisor: a.supervisor_nome || "Supervisor",
+  nota: Number(a.nota),
+  feedback: a.feedback || "",
+  data: isoParaBR(a.data_avaliacao)
+});
+
+const mapAvaliacaoSupervisor = (estagioId) => (a) => ({
+  id: a.id,
+  alunoNome: a.aluno_nome || "Estágio #" + (a.estagio_id ?? estagioId),
+  periodo: periodoDe(a.data_avaliacao),
+  nota: Number(a.nota),
+  feedback: a.feedback || "",
+  data: isoParaBR(a.data_avaliacao)
+});
+
 export function AppProvider({ children }) {
   // sessão (persistida no localStorage para sobreviver a refresh/URL direta)
-  const [logado, setLogado] = useState(() => localStorage.getItem("logado") === "1");
-  const [role, setRole] = useState(() => localStorage.getItem("role") || "aluno"); // 'aluno' | 'supervisor'
+  const [usuario, setUsuario] = useState(() => {
+    try {
+      return JSON.parse(localStorage.getItem("usuario")) || null;
+    } catch {
+      return null;
+    }
+  });
+  const [role, setRole] = useState(() => localStorage.getItem("role") || "aluno");
+  const [estagioId, setEstagioId] = useState(() => {
+    const salvo = parseInt(localStorage.getItem("estagioId"), 10);
+    return isNaN(salvo) ? ESTAGIO_PADRAO : salvo;
+  });
+  const logado = !!usuario;
 
-  // dados
+  // dados (iniciam com os mocks e são substituídos pelos dados da API quando disponíveis)
   const [vagas, setVagas] = useState(vagasIniciais);
   const [candidaturasAluno, setCandidaturasAluno] = useState(candidaturasAlunoIniciais);
   const [diario, setDiario] = useState(diarioInicial);
-  const [avaliacoesAluno] = useState(avaliacoesAlunoIniciais);
+  const [avaliacoesAluno, setAvaliacoesAluno] = useState(avaliacoesAlunoIniciais);
   const [estagiarios] = useState(estagiariosIniciais);
   const [candidaturasSupervisor, setCandidaturasSupervisor] = useState(candidaturasSupervisorIniciais);
   const [avaliacoesSupervisor, setAvaliacoesSupervisor] = useState(avaliacoesSupervisorIniciais);
@@ -47,29 +117,109 @@ export function AppProvider({ children }) {
     };
   }, []);
 
+  // Descobre o estágio ativo do aluno logado (GET /estagio-atual)
+  useEffect(() => {
+    if (!logado || usuario?.tipo !== "aluno" || !usuario?.id) return;
+    let ativo = true;
+    (async () => {
+      try {
+        const r = await obterEstagioAtual(usuario.id);
+        const id = r.data?.estagio_id;
+        if (ativo && id) {
+          setEstagioId(id);
+          localStorage.setItem("estagioId", String(id));
+        }
+      } catch (e) {
+        // 404 = aluno ainda sem estágio ativo; mantém o padrão
+        console.warn("GET /estagio-atual: nenhum estágio ativo encontrado.", e);
+      }
+    })();
+    return () => {
+      ativo = false;
+    };
+  }, [logado, usuario]);
+
+  // Carrega os dados da API depois do login (mantém os mocks se alguma rota falhar)
+  useEffect(() => {
+    if (!logado) return;
+    let ativo = true;
+
+    (async () => {
+      try {
+        const lista = extrairLista(await listarVagas());
+        if (ativo && lista) setVagas(lista.map(mapVaga));
+      } catch (e) {
+        console.warn("GET /vagas falhou — usando dados de exemplo.", e);
+      }
+
+      try {
+        const lista = extrairLista(await listarAtividades(estagioId));
+        if (ativo && lista) setDiario(lista.map(mapAtividade));
+      } catch (e) {
+        console.warn("GET /atividades falhou — usando dados de exemplo.", e);
+      }
+
+      try {
+        const lista = extrairLista(await listarAvaliacoes(estagioId));
+        if (ativo && lista) {
+          setAvaliacoesAluno(lista.map(mapAvaliacaoAluno));
+          setAvaliacoesSupervisor(lista.map(mapAvaliacaoSupervisor(estagioId)));
+        }
+      } catch (e) {
+        console.warn("GET /avaliacoes falhou — usando dados de exemplo.", e);
+      }
+    })();
+
+    return () => {
+      ativo = false;
+    };
+  }, [logado, estagioId]);
+
   const showToast = (msg) => {
     setToast(msg);
     clearTimeout(toastTimer.current);
     toastTimer.current = setTimeout(() => setToast(null), 2800);
   };
 
-  const login = (novoRole) => {
+  // ---- Sessão ----
+
+  const login = async (email, senha, roleEscolhido) => {
+    const resposta = await fazerLogin(email, senha);
+    const dados = resposta.data?.user || resposta.data?.usuario || resposta.data || {};
+    const tipo = dados.tipo || roleEscolhido;
+    const novoRole = tipo === "aluno" ? "aluno" : "supervisor";
+    const sessao = {
+      id: dados.id ?? null,
+      nome: dados.nome || "",
+      email: dados.email || email,
+      tipo
+    };
+    setUsuario(sessao);
     setRole(novoRole);
-    setLogado(true);
-    localStorage.setItem("logado", "1");
+    localStorage.setItem("usuario", JSON.stringify(sessao));
     localStorage.setItem("role", novoRole);
   };
 
   const logout = () => {
-    setLogado(false);
+    setUsuario(null);
     setMobileNavOpen(false);
-    localStorage.removeItem("logado");
+    localStorage.removeItem("usuario");
     localStorage.removeItem("role");
+    localStorage.removeItem("estagioId");
   };
 
-  const candidatar = (vagaId) => {
+  // ---- Ações ----
+
+  const candidatar = async (vagaId) => {
     const vaga = vagas.find((v) => v.id === vagaId);
     if (!vaga || vaga.candidatado) return;
+    try {
+      await candidatarVaga(vagaId, usuario?.id ?? 0);
+    } catch (e) {
+      console.warn("POST /candidaturas falhou.", e);
+      showToast(extrairErro(e, "Erro ao enviar candidatura. Verifique o servidor."));
+      return;
+    }
     const novaCand = {
       id: "c" + Date.now(),
       empresa: vaga.empresa,
@@ -82,23 +232,74 @@ export function AppProvider({ children }) {
     showToast("Candidatura enviada para " + vaga.empresa + "!");
   };
 
-  const addRegistroDiario = (registro) => {
+  const addRegistroDiario = async (registro) => {
+    const horas = Number(registro.horas);
+    // Regra do backend: entre 1 e 8 horas por atividade
+    if (isNaN(horas) || horas < 1 || horas > 8) {
+      showToast("Registre entre 1 e 8 horas por atividade.");
+      return false;
+    }
+    const descricaoApi = registro.descricao
+      ? registro.atividade + " — " + registro.descricao
+      : registro.atividade;
+    try {
+      await registrarAtividade({
+        estagio_id: estagioId,
+        descricao: descricaoApi,
+        horas_dedicadas: horas,
+        data_registro: brParaISO(registro.data)
+      });
+    } catch (e) {
+      console.warn("POST /atividades falhou.", e);
+      showToast(extrairErro(e, "Erro ao salvar no servidor. Tente novamente."));
+      return false;
+    }
     setDiario((ds) => [{ id: "d" + Date.now(), ...registro }, ...ds]);
     showToast("Registro adicionado ao diário de bordo.");
+    return true;
   };
 
-  const addAvaliacao = ({ alunoId, nota, feedback }) => {
+  const removerRegistroDiario = async (id) => {
+    const registro = diario.find((d) => d.id === id);
+    if (registro?.doServidor) {
+      try {
+        await eliminarAtividade(id);
+      } catch (e) {
+        console.warn("DELETE /atividades falhou.", e);
+        showToast(extrairErro(e, "Erro ao excluir o registro."));
+        return;
+      }
+    }
+    setDiario((ds) => ds.filter((d) => d.id !== id));
+    showToast("Registro removido do diário.");
+  };
+
+  const addAvaliacao = async ({ alunoId, nota, feedback }) => {
+    const notaInteira = parseInt(nota, 10);
+    try {
+      await lancarAvaliacao({
+        estagio_id: estagioId,
+        nota: notaInteira,
+        feedback,
+        data_avaliacao: hojeISO()
+      });
+    } catch (e) {
+      console.warn("POST /avaliacoes falhou.", e);
+      showToast(extrairErro(e, "Erro ao salvar avaliação. Verifique o servidor."));
+      return false;
+    }
     const aluno = estagiarios.find((e) => e.id === alunoId);
     const nova = {
       id: "av" + Date.now(),
-      alunoNome: aluno ? aluno.nome : "",
-      periodo: "Julho 2026",
-      nota: parseFloat(nota),
+      alunoNome: aluno ? aluno.nome : "Estágio #" + estagioId,
+      periodo: periodoDe(hojeISO()),
+      nota: notaInteira,
       feedback,
       data: formatToday()
     };
     setAvaliacoesSupervisor((as) => [nova, ...as]);
     showToast("Avaliação registrada com sucesso.");
+    return true;
   };
 
   const aprovarCandidatura = (id) => {
@@ -115,14 +316,20 @@ export function AppProvider({ children }) {
     showToast("Candidatura rejeitada.");
   };
 
-  const perfil = role === "aluno" ? perfilAluno : perfilSupervisor;
+  // Perfil: base dos mocks, sobrescrito com os dados reais do usuário logado
+  const basePerfil = role === "aluno" ? perfilAluno : perfilSupervisor;
+  const perfil = usuario
+    ? { ...basePerfil, nome: usuario.nome || basePerfil.nome, email: usuario.email || basePerfil.email }
+    : basePerfil;
 
   return (
     <AppContext.Provider
       value={{
         logado,
+        usuario,
         role,
         perfil,
+        estagioId,
         vagas,
         candidaturasAluno,
         diario,
@@ -140,6 +347,7 @@ export function AppProvider({ children }) {
         logout,
         candidatar,
         addRegistroDiario,
+        removerRegistroDiario,
         addAvaliacao,
         aprovarCandidatura,
         rejeitarCandidatura

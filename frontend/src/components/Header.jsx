@@ -14,6 +14,7 @@ function Header() {
     "/diario": "Diário de Bordo",
     "/avaliacoes": role === "supervisor" ? "Avaliações de Estagiários" : "Avaliações",
     "/estagiarios": "Estagiários",
+    "/documentos": "Documentos",
     "/perfil": "Meu Perfil"
   };
 

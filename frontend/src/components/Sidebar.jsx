@@ -9,6 +9,7 @@ const itensAluno = [
   { path: "/candidaturas", label: "Candidaturas", icon: "clipboard" },
   { path: "/diario", label: "Diário de Bordo", icon: "book" },
   { path: "/avaliacoes", label: "Avaliações", icon: "star" },
+  { path: "/documentos", label: "Documentos", icon: "clipboardCheck" },
   { path: "/perfil", label: "Perfil", icon: "user" }
 ];
 
@@ -17,6 +18,7 @@ const itensSupervisor = [
   { path: "/estagiarios", label: "Estagiários", icon: "briefcase" },
   { path: "/candidaturas", label: "Candidaturas", icon: "clipboard" },
   { path: "/avaliacoes", label: "Avaliações", icon: "star" },
+  { path: "/documentos", label: "Documentos", icon: "clipboardCheck" },
   { path: "/perfil", label: "Perfil", icon: "user" }
 ];
 

@@ -31,19 +31,21 @@ function CardVaga({ vaga }) {
         >
           <Icon icon="building" size={21} color="#5C8600" />
         </div>
-        <div
-          style={{
-            fontSize: "12px",
-            fontWeight: 700,
-            color: "#2952A3",
-            background: "#E8EEFB",
-            padding: "4px 10px",
-            borderRadius: "999px",
-            whiteSpace: "nowrap"
-          }}
-        >
-          {vaga.modalidade}
-        </div>
+        {vaga.modalidade && (
+          <div
+            style={{
+              fontSize: "12px",
+              fontWeight: 700,
+              color: "#2952A3",
+              background: "#E8EEFB",
+              padding: "4px 10px",
+              borderRadius: "999px",
+              whiteSpace: "nowrap"
+            }}
+          >
+            {vaga.modalidade}
+          </div>
+        )}
       </div>
 
       <div>
@@ -56,18 +58,31 @@ function CardVaga({ vaga }) {
       <div style={{ fontSize: "13.5px", color: "#64748B", lineHeight: 1.5 }}>{vaga.descricao}</div>
 
       <div style={{ display: "flex", flexDirection: "column", gap: "8px", fontSize: "13px", color: "#475569" }}>
-        <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-          <Icon icon="mapPin" size={15} color="#94A3B8" />
-          {vaga.local}
-        </div>
-        <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-          <Icon icon="dollar" size={15} color="#94A3B8" />
-          Bolsa: {vaga.bolsa}
-        </div>
-        <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-          <Icon icon="clock" size={15} color="#94A3B8" />
-          {vaga.carga} · {vaga.vagasDisp} vaga(s)
-        </div>
+        {vaga.local && (
+          <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+            <Icon icon="mapPin" size={15} color="#94A3B8" />
+            {vaga.local}
+          </div>
+        )}
+        {vaga.bolsa && (
+          <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+            <Icon icon="dollar" size={15} color="#94A3B8" />
+            Bolsa: {vaga.bolsa}
+          </div>
+        )}
+        {vaga.carga && (
+          <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+            <Icon icon="clock" size={15} color="#94A3B8" />
+            {vaga.carga}
+            {vaga.vagasDisp ? ` · ${vaga.vagasDisp} vaga(s)` : ""}
+          </div>
+        )}
+        {vaga.requisitos && (
+          <div style={{ display: "flex", alignItems: "flex-start", gap: "8px" }}>
+            <Icon icon="clipboardCheck" size={15} color="#94A3B8" />
+            <span>Requisitos: {vaga.requisitos}</span>
+          </div>
+        )}
       </div>
 
       {vaga.candidatado ? (

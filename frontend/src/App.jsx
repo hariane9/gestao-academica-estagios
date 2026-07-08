@@ -2,6 +2,8 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import { AppProvider } from "./context/AppContext";
 import Login from "./pages/Login";
+import Cadastro from "./pages/Cadastro";
+import Documentos from "./pages/Documentos";
 import Dashboard from "./pages/Dashboard";
 import Vagas from "./pages/Vagas";
 import Candidaturas from "./pages/Candidaturas";
@@ -16,6 +18,8 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Login />} />
+          <Route path="/cadastro" element={<Cadastro />} />
+          <Route path="/documentos" element={<Documentos />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/vagas" element={<Vagas />} />
           <Route path="/candidaturas" element={<Candidaturas />} />

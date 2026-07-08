@@ -30,11 +30,13 @@ function ModalNovaAvaliacao({ alunoIdInicial, onClose }) {
 
   const atualizar = (campo) => (e) => setForm((f) => ({ ...f, [campo]: e.target.value }));
 
-  const salvar = (e) => {
+  const salvar = async (e) => {
     e.preventDefault();
-    if (!form.alunoId || !form.nota || !form.feedback) return;
-    addAvaliacao(form);
-    onClose();
+    const nota = parseInt(form.nota, 10);
+    if (!form.alunoId || form.nota === "" || !form.feedback) return;
+    if (isNaN(nota) || nota < 0 || nota > 10) return;
+    const ok = await addAvaliacao(form);
+    if (ok) onClose();
   };
 
   return (
@@ -99,15 +101,15 @@ function ModalNovaAvaliacao({ alunoIdInicial, onClose }) {
           ))}
         </select>
 
-        <label style={estiloLabel}>Nota (0 a 10)</label>
+        <label style={estiloLabel}>Nota (número inteiro de 0 a 10)</label>
         <input
           type="number"
-          step="0.1"
+          step="1"
           min="0"
           max="10"
           value={form.nota}
           onChange={atualizar("nota")}
-          placeholder="Ex: 8.5"
+          placeholder="Ex: 9"
           style={estiloInput}
         />
 

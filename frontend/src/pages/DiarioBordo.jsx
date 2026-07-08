@@ -46,7 +46,7 @@ function construirCalendario(diario) {
 }
 
 function DiarioBordo() {
-  const { diario, isMobile } = useApp();
+  const { diario, isMobile, removerRegistroDiario } = useApp();
   const [modalAberto, setModalAberto] = useState(false);
 
   const calendario = construirCalendario(diario);
@@ -94,21 +94,43 @@ function DiarioBordo() {
                   }}
                 >
                   <div style={{ fontSize: "15px", fontWeight: 800, color: "#1E293B" }}>{item.atividade}</div>
-                  <div
-                    style={{
-                      fontSize: "12.5px",
-                      fontWeight: 700,
-                      color: "#5C8600",
-                      background: "#E6F4EA",
-                      padding: "4px 10px",
-                      borderRadius: "999px"
-                    }}
-                  >
-                    {item.horas}h
+                  <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                    <div
+                      style={{
+                        fontSize: "12.5px",
+                        fontWeight: 700,
+                        color: "#5C8600",
+                        background: "#E6F4EA",
+                        padding: "4px 10px",
+                        borderRadius: "999px"
+                      }}
+                    >
+                      {item.horas}h
+                    </div>
+                    <button
+                      onClick={() => removerRegistroDiario(item.id)}
+                      title="Excluir registro"
+                      style={{
+                        background: "#F5F7FA",
+                        border: "none",
+                        borderRadius: "7px",
+                        width: "26px",
+                        height: "26px",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        cursor: "pointer",
+                        color: "#94A3B8"
+                      }}
+                    >
+                      <Icon icon="x" size={13} color="currentColor" />
+                    </button>
                   </div>
                 </div>
-                <div style={{ fontSize: "13px", color: "#94A3B8", marginBottom: "10px" }}>{item.data}</div>
-                <div style={{ fontSize: "13.5px", color: "#475569", lineHeight: 1.5 }}>{item.descricao}</div>
+                <div style={{ fontSize: "13px", color: "#94A3B8", marginBottom: item.descricao ? "10px" : 0 }}>{item.data}</div>
+                {item.descricao && (
+                  <div style={{ fontSize: "13.5px", color: "#475569", lineHeight: 1.5 }}>{item.descricao}</div>
+                )}
               </div>
             ))}
           </div>
