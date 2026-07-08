@@ -20,16 +20,28 @@ const estiloInput = {
   background: "#F8FAFC"
 };
 
-function ModalNovoRegistro({ onClose }) {
-  const { addRegistroDiario } = useApp();
-  const [form, setForm] = useState({ data: "", atividade: "", horas: "", descricao: "" });
+function ModalNovoRegistro({ registro, onClose }) {
+  const { addRegistroDiario, editarRegistroDiario } = useApp();
+  const editando = !!registro;
+  const [form, setForm] = useState(
+    registro
+      ? {
+          data: registro.data || "",
+          atividade: registro.atividade || "",
+          horas: registro.horas || "",
+          descricao: registro.descricao || ""
+        }
+      : { data: "", atividade: "", horas: "", descricao: "" }
+  );
 
   const atualizar = (campo) => (e) => setForm((f) => ({ ...f, [campo]: e.target.value }));
 
   const salvar = async (e) => {
     e.preventDefault();
     if (!form.data || !form.atividade || !form.horas) return;
-    const ok = await addRegistroDiario(form);
+    const ok = editando
+      ? await editarRegistroDiario(registro.id, form)
+      : await addRegistroDiario(form);
     if (ok) onClose();
   };
 
@@ -67,7 +79,7 @@ function ModalNovoRegistro({ onClose }) {
           }}
         >
           <div style={{ fontSize: "18px", fontWeight: 800, color: "#1E293B" }}>
-            Novo Registro no Diário
+            {editando ? "Editar Registro" : "Novo Registro no Diário"}
           </div>
           <button
             type="button"
@@ -125,7 +137,7 @@ function ModalNovoRegistro({ onClose }) {
             Cancelar
           </button>
           <button type="submit" className="btn-primary" style={{ flex: 1, padding: "12px", fontSize: "14px" }}>
-            Salvar Registro
+            {editando ? "Salvar Alterações" : "Salvar Registro"}
           </button>
         </div>
       </form>

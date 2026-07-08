@@ -48,6 +48,7 @@ function construirCalendario(diario) {
 function DiarioBordo() {
   const { diario, isMobile, removerRegistroDiario } = useApp();
   const [modalAberto, setModalAberto] = useState(false);
+  const [registroEditando, setRegistroEditando] = useState(null);
 
   const calendario = construirCalendario(diario);
 
@@ -107,6 +108,24 @@ function DiarioBordo() {
                     >
                       {item.horas}h
                     </div>
+                    <button
+                      onClick={() => setRegistroEditando(item)}
+                      title="Editar registro"
+                      style={{
+                        background: "#F5F7FA",
+                        border: "none",
+                        borderRadius: "7px",
+                        width: "26px",
+                        height: "26px",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        cursor: "pointer",
+                        color: "#5C8600"
+                      }}
+                    >
+                      <Icon icon="edit" size={13} color="currentColor" />
+                    </button>
                     <button
                       onClick={() => removerRegistroDiario(item.id)}
                       title="Excluir registro"
@@ -202,7 +221,15 @@ function DiarioBordo() {
         </div>
       </div>
 
-      {modalAberto && <ModalNovoRegistro onClose={() => setModalAberto(false)} />}
+      {(modalAberto || registroEditando) && (
+        <ModalNovoRegistro
+          registro={registroEditando}
+          onClose={() => {
+            setModalAberto(false);
+            setRegistroEditando(null);
+          }}
+        />
+      )}
     </MainLayout>
   );
 }

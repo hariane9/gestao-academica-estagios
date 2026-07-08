@@ -17,6 +17,7 @@ import {
   obterEstagioAtual,
   listarAtividades,
   registrarAtividade,
+  editarAtividade,
   eliminarAtividade,
   listarAvaliacoes,
   lancarAvaliacao,
@@ -259,6 +260,35 @@ export function AppProvider({ children }) {
     return true;
   };
 
+  const editarRegistroDiario = async (id, registro) => {
+    const horas = Number(registro.horas);
+    if (isNaN(horas) || horas < 1 || horas > 8) {
+      showToast("Registre entre 1 e 8 horas por atividade.");
+      return false;
+    }
+    const item = diario.find((d) => d.id === id);
+    const descricaoApi = registro.descricao
+      ? registro.atividade + " — " + registro.descricao
+      : registro.atividade;
+    if (item?.doServidor) {
+      try {
+        await editarAtividade({
+          id,
+          descricao: descricaoApi,
+          horas_dedicadas: horas,
+          data_registro: brParaISO(registro.data)
+        });
+      } catch (e) {
+        console.warn("PUT /atividades falhou.", e);
+        showToast(extrairErro(e, "Erro ao atualizar o registro."));
+        return false;
+      }
+    }
+    setDiario((ds) => ds.map((d) => (d.id === id ? { ...d, ...registro } : d)));
+    showToast("Registro atualizado.");
+    return true;
+  };
+
   const removerRegistroDiario = async (id) => {
     const registro = diario.find((d) => d.id === id);
     if (registro?.doServidor) {
@@ -347,6 +377,7 @@ export function AppProvider({ children }) {
         logout,
         candidatar,
         addRegistroDiario,
+        editarRegistroDiario,
         removerRegistroDiario,
         addAvaliacao,
         aprovarCandidatura,
