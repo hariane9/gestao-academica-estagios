@@ -7,6 +7,10 @@ RUN docker-php-ext-install pdo_mysql
 # mod_rewrite (usado pelo .htaccess)
 RUN a2enmod rewrite
 
+# Garante um único MPM carregado (corrige "More than one MPM loaded")
+RUN a2dismod -f mpm_event mpm_worker 2>/dev/null || true; \
+    a2enmod mpm_prefork 2>/dev/null || true
+
 # Copia o projeto (o .dockerignore exclui frontend, .git e o dump do banco)
 COPY . /var/www/html/
 
