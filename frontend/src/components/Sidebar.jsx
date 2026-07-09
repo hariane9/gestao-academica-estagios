@@ -22,12 +22,18 @@ const itensSupervisor = [
   { path: "/perfil", label: "Perfil", icon: "user" }
 ];
 
+const itensEmpresa = [
+  { path: "/minhas-vagas", label: "Minhas Vagas", icon: "briefcase" },
+  { path: "/perfil", label: "Perfil", icon: "user" }
+];
+
 function Sidebar() {
   const navigate = useNavigate();
   const location = useLocation();
   const { role, logout, isMobile, mobileNavOpen, setMobileNavOpen } = useApp();
 
-  const itens = role === "supervisor" ? itensSupervisor : itensAluno;
+  const itens =
+    role === "supervisor" ? itensSupervisor : role === "empresa" ? itensEmpresa : itensAluno;
 
   const irPara = (path) => {
     setMobileNavOpen(false);

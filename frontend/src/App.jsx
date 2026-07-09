@@ -6,6 +6,7 @@ import Cadastro from "./pages/Cadastro";
 import Documentos from "./pages/Documentos";
 import Dashboard from "./pages/Dashboard";
 import Vagas from "./pages/Vagas";
+import MinhasVagas from "./pages/MinhasVagas";
 import Candidaturas from "./pages/Candidaturas";
 import DiarioBordo from "./pages/DiarioBordo";
 import Avaliacoes from "./pages/Avaliacoes";
@@ -22,6 +23,7 @@ function App() {
           <Route path="/documentos" element={<Documentos />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/vagas" element={<Vagas />} />
+          <Route path="/minhas-vagas" element={<MinhasVagas />} />
           <Route path="/candidaturas" element={<Candidaturas />} />
           <Route path="/diario" element={<DiarioBordo />} />
           <Route path="/avaliacoes" element={<Avaliacoes />} />

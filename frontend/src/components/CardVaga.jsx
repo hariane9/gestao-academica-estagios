@@ -2,7 +2,7 @@ import Icon from "./Icon";
 import { useApp } from "../context/AppContext";
 
 function CardVaga({ vaga }) {
-  const { candidatar } = useApp();
+  const { candidatar, role } = useApp();
 
   return (
     <div
@@ -85,7 +85,7 @@ function CardVaga({ vaga }) {
         )}
       </div>
 
-      {vaga.candidatado ? (
+      {role !== "aluno" ? null : vaga.candidatado ? (
         <button
           style={{
             width: "100%",

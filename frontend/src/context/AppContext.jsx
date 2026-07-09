@@ -13,7 +13,10 @@ import {
 import {
   fazerLogin,
   listarVagas,
+  criarVaga,
   candidatarVaga,
+  listarEmpresas,
+  vincularEmpresa,
   obterEstagioAtual,
   listarAtividades,
   registrarAtividade,
@@ -98,6 +101,8 @@ export function AppProvider({ children }) {
   const [estagiarios] = useState(estagiariosIniciais);
   const [candidaturasSupervisor, setCandidaturasSupervisor] = useState(candidaturasSupervisorIniciais);
   const [avaliacoesSupervisor, setAvaliacoesSupervisor] = useState(avaliacoesSupervisorIniciais);
+  // Vínculo da empresa logada (registro na tabela empresas), quando role === "empresa"
+  const [minhaEmpresa, setMinhaEmpresa] = useState(null);
 
   // UI
   const [toast, setToast] = useState(null);
@@ -133,6 +138,28 @@ export function AppProvider({ children }) {
       } catch (e) {
         // 404 = aluno ainda sem estágio ativo; mantém o padrão
         console.warn("GET /estagio-atual: nenhum estágio ativo encontrado.", e);
+      }
+    })();
+    return () => {
+      ativo = false;
+    };
+  }, [logado, usuario]);
+
+  // Busca o vínculo da empresa logada (GET /empresas, casando pelo e-mail)
+  useEffect(() => {
+    if (!logado || usuario?.tipo !== "empresa" || !usuario?.email) return;
+    let ativo = true;
+    (async () => {
+      try {
+        const lista = extrairLista(await listarEmpresas());
+        if (ativo && lista) {
+          const minha = lista.find(
+            (e) => (e.email_contacto || "").toLowerCase() === usuario.email.toLowerCase()
+          );
+          setMinhaEmpresa(minha || null);
+        }
+      } catch (e) {
+        console.warn("GET /empresas falhou.", e);
       }
     })();
     return () => {
@@ -188,7 +215,7 @@ export function AppProvider({ children }) {
     const resposta = await fazerLogin(email, senha);
     const dados = resposta.data?.user || resposta.data?.usuario || resposta.data || {};
     const tipo = dados.tipo || roleEscolhido;
-    const novoRole = tipo === "aluno" ? "aluno" : "supervisor";
+    const novoRole = ["aluno", "supervisor", "empresa"].includes(tipo) ? tipo : "supervisor";
     const sessao = {
       id: dados.id ?? null,
       nome: dados.nome || "",
@@ -199,6 +226,7 @@ export function AppProvider({ children }) {
     setRole(novoRole);
     localStorage.setItem("usuario", JSON.stringify(sessao));
     localStorage.setItem("role", novoRole);
+    return sessao;
   };
 
   const logout = () => {
@@ -332,6 +360,57 @@ export function AppProvider({ children }) {
     return true;
   };
 
+  const vincularMinhaEmpresa = async (dados) => {
+    try {
+      await vincularEmpresa({ usuario_id: usuario?.id, ...dados });
+    } catch (e) {
+      console.warn("POST /empresas falhou.", e);
+      showToast(extrairErro(e, "Erro ao salvar os dados da empresa."));
+      return false;
+    }
+    setMinhaEmpresa({
+      id: null,
+      nome_comercial: dados.nome_comercial,
+      nif: dados.nif,
+      morada: dados.morada,
+      email_contacto: usuario?.email
+    });
+    // recarrega para obter o id gerado
+    try {
+      const lista = extrairLista(await listarEmpresas());
+      const minha = lista?.find(
+        (e) => (e.email_contacto || "").toLowerCase() === (usuario?.email || "").toLowerCase()
+      );
+      if (minha) setMinhaEmpresa(minha);
+    } catch {
+      // mantém os dados locais
+    }
+    showToast("Perfil da empresa configurado com sucesso!");
+    return true;
+  };
+
+  const publicarVaga = async (dados) => {
+    if (!minhaEmpresa?.id) {
+      showToast("Complete o perfil da empresa antes de publicar vagas.");
+      return false;
+    }
+    try {
+      await criarVaga({ empresa_id: minhaEmpresa.id, ...dados });
+    } catch (e) {
+      console.warn("POST /vagas falhou.", e);
+      showToast(extrairErro(e, "Erro ao publicar a vaga."));
+      return false;
+    }
+    try {
+      const lista = extrairLista(await listarVagas());
+      if (lista) setVagas(lista.map(mapVaga));
+    } catch {
+      // lista local fica como está
+    }
+    showToast("Vaga publicada com sucesso!");
+    return true;
+  };
+
   const aprovarCandidatura = (id) => {
     setCandidaturasSupervisor((cs) =>
       cs.map((c) => (c.id === id ? { ...c, status: "Aprovada" } : c))
@@ -347,7 +426,8 @@ export function AppProvider({ children }) {
   };
 
   // Perfil: base dos mocks, sobrescrito com os dados reais do usuário logado
-  const basePerfil = role === "aluno" ? perfilAluno : perfilSupervisor;
+  const basePerfil =
+    role === "aluno" ? perfilAluno : role === "empresa" ? { nome: "", email: "" } : perfilSupervisor;
   const perfil = usuario
     ? { ...basePerfil, nome: usuario.nome || basePerfil.nome, email: usuario.email || basePerfil.email }
     : basePerfil;
@@ -376,6 +456,9 @@ export function AppProvider({ children }) {
         login,
         logout,
         candidatar,
+        minhaEmpresa,
+        vincularMinhaEmpresa,
+        publicarVaga,
         addRegistroDiario,
         editarRegistroDiario,
         removerRegistroDiario,

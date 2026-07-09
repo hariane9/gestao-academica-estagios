@@ -15,8 +15,11 @@ function Header() {
     "/avaliacoes": role === "supervisor" ? "Avaliações de Estagiários" : "Avaliações",
     "/estagiarios": "Estagiários",
     "/documentos": "Documentos",
+    "/minhas-vagas": "Minhas Vagas",
     "/perfil": "Meu Perfil"
   };
+
+  const rotulosRole = { aluno: "Estudante", supervisor: "Supervisor", empresa: "Empresa" };
 
   return (
     <header
@@ -107,7 +110,7 @@ function Header() {
             <div>
               <div style={{ fontSize: "13.5px", fontWeight: 700, color: "#1E293B" }}>{perfil.nome}</div>
               <div style={{ fontSize: "12px", color: "#94A3B8" }}>
-                {role === "supervisor" ? "Supervisor" : "Estudante"}
+                {rotulosRole[role] || "Usuário"}
               </div>
             </div>
           )}

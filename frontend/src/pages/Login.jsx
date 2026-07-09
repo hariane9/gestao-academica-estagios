@@ -44,8 +44,8 @@ function Login() {
     }
     setEnviando(true);
     try {
-      await login(email.trim(), senha, role);
-      navigate("/dashboard");
+      const sessao = await login(email.trim(), senha, role);
+      navigate(sessao.tipo === "empresa" ? "/minhas-vagas" : "/dashboard");
     } catch (err) {
       if (err.response) {
         setErro(extrairErro(err, "E-mail ou senha inválidos."));
