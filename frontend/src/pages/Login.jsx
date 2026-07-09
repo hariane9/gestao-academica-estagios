@@ -208,14 +208,21 @@ function Login() {
             }}
           >
             <button type="button" onClick={() => setRole("aluno")} style={estiloTab(role === "aluno")}>
-              Sou Estudante
+              Estudante
             </button>
             <button
               type="button"
               onClick={() => setRole("supervisor")}
               style={estiloTab(role === "supervisor")}
             >
-              Sou Supervisor
+              Supervisor
+            </button>
+            <button
+              type="button"
+              onClick={() => setRole("empresa")}
+              style={estiloTab(role === "empresa")}
+            >
+              Empresa
             </button>
           </div>
 
