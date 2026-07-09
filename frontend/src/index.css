@@ -1,0 +1,144 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: 'Inter', system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  background: #F5F7FA;
+  color: #334155;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-thumb {
+  background: #CBD5E1;
+  border-radius: 8px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: #94A3B8;
+}
+
+input:focus,
+textarea:focus,
+select:focus,
+button:focus {
+  outline: none;
+}
+
+input,
+textarea,
+select,
+button {
+  font-family: inherit;
+}
+
+a {
+  color: #5C8600;
+  text-decoration: none;
+}
+a:hover {
+  color: #4A6D00;
+  text-decoration: underline;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes overlayIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* Botão primário (verde) */
+.btn-primary {
+  background: #5C8600;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  font-weight: 700;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+.btn-primary:hover {
+  background: #4A6D00;
+}
+
+/* Item de navegação da sidebar */
+.nav-btn {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 11px 14px;
+  border-radius: 10px;
+  border: none;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  text-align: left;
+  background: transparent;
+  color: #475569;
+}
+.nav-btn:hover {
+  background: #F1F5F9;
+}
+.nav-btn.active {
+  background: #E6F4EA;
+  color: #4F7300;
+}
+
+/* Botão sair */
+.logout-btn {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 11px 14px;
+  border-radius: 10px;
+  border: none;
+  background: transparent;
+  color: #64748B;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.logout-btn:hover {
+  background: #F1F5F9;
+  color: #C40000;
+}
+
+/* Chips de filtro */
+.chip {
+  padding: 8px 16px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  border: 1px solid #E2E8F0;
+  background: #fff;
+  color: #475569;
+  white-space: nowrap;
+}
+.chip:hover {
+  border-color: #5C8600;
+}
+.chip.active {
+  border-color: #5C8600;
+  background: #5C8600;
+  color: #fff;
+}

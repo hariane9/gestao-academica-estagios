@@ -1,0 +1,11 @@
+RewriteEngine On
+
+# Impede que utilizadores naveguem pelas pastas diretamente
+Options -Indexes
+
+# Se o ficheiro ou pasta real existir, acede diretamente
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+
+# Caso contrário, envia tudo silenciosamente para o index.php dentro de public
+RewriteRule ^(.*)$ public/index.php [L,QSA]

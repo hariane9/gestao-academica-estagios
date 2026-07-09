@@ -1,0 +1,29 @@
+.login-container{
+  display:flex;
+  min-height:100vh;
+}
+
+.login-left{
+  width:44%;
+  min-width:420px;
+  background:linear-gradient(
+    160deg,
+    #5C8600,
+    #4F7300
+  );
+  color:white;
+  padding:56px;
+}
+
+.login-right{
+  flex:1;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  background:white;
+}
+
+.login-form{
+  width:100%;
+  max-width:400px;
+}
