@@ -1,0 +1,6 @@
+# Não entra na imagem do backend:
+.git
+frontend
+*.md
+# dump do banco não deve ir para o servidor (segurança)
+public/backend

@@ -2,8 +2,12 @@ import axios from "axios";
 
 // Em desenvolvimento, o Vite redireciona "/api" para
 // http://localhost/gestao_estagios/public/index.php (ver vite.config.js).
+// Em produção (hospedado), defina VITE_API_URL com a URL completa da API,
+// ex: https://sua-api.up.railway.app/index.php
+const API_URL = import.meta.env.VITE_API_URL || "/api";
+
 const api = axios.create({
-  baseURL: "/api",
+  baseURL: API_URL,
   headers: { "Content-Type": "application/json" }
 });
 
@@ -77,10 +81,18 @@ export const enviarDocumento = (estagio_id, tipo_documento, arquivo) => {
   });
 };
 
-// Monta a URL pública de um documento (caminho_ficheiro vem como "uploads/xxx.pdf";
-// o proxy do Vite redireciona /uploads para o backend)
-export const urlDocumento = (caminho_ficheiro) =>
-  caminho_ficheiro ? "/" + String(caminho_ficheiro).replace(/^\/+/, "") : null;
+// Monta a URL pública de um documento (caminho_ficheiro vem como "uploads/xxx.pdf").
+// Em dev o proxy do Vite redireciona /uploads para o backend; em produção
+// os arquivos ficam na raiz pública da API (VITE_API_URL sem o /index.php).
+export const urlDocumento = (caminho_ficheiro) => {
+  if (!caminho_ficheiro) return null;
+  const caminho = String(caminho_ficheiro).replace(/^\/+/, "");
+  if (import.meta.env.VITE_API_URL) {
+    const raizBackend = import.meta.env.VITE_API_URL.replace(/\/index\.php\/?$/, "");
+    return raizBackend + "/" + caminho;
+  }
+  return "/" + caminho;
+};
 
 // Extrai a lista de um retorno que pode vir como array direto ou { data: [...] }
 export function extrairLista(resposta) {
