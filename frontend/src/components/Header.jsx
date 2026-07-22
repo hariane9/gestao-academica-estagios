@@ -15,11 +15,10 @@ function Header() {
     "/avaliacoes": role === "supervisor" ? "Avaliações de Estagiários" : "Avaliações",
     "/estagiarios": "Estagiários",
     "/documentos": "Documentos",
-    "/minhas-vagas": "Minhas Vagas",
     "/perfil": "Meu Perfil"
   };
 
-  const rotulosRole = { aluno: "Estudante", supervisor: "Supervisor", empresa: "Empresa" };
+  const rotulosRole = { aluno: "Estudante", supervisor: "Supervisor" };
 
   return (
     <header

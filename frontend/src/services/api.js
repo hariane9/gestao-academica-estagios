@@ -17,23 +17,14 @@ export const ESTAGIO_PADRAO = 1;
 
 // ---- Autenticação ----
 export const registrar = (dados) =>
-  api.post("/register", dados); // { nome, email, senha, tipo: "aluno" | "empresa" | "supervisor" }
+  api.post("/register", dados); // { nome, email, senha, tipo: "aluno" | "supervisor" }
 
 export const fazerLogin = (email, senha) =>
   api.post("/login", { email, senha }); // resposta: { message, user: { id, nome, email, tipo } }
 
-// ---- Empresas ----
-export const listarEmpresas = () => api.get("/empresas");
-
-export const vincularEmpresa = (dados) =>
-  api.post("/empresas", dados); // { usuario_id, nome_comercial, nif, morada? }
-
 // ---- Vagas e candidaturas ----
 // GET /vagas devolve: { id, titulo, descricao, requisitos, localizacao, criado_em, empresa }
 export const listarVagas = () => api.get("/vagas");
-
-export const criarVaga = (dados) =>
-  api.post("/vagas", dados); // { empresa_id, titulo, descricao, requisitos?, localizacao? }
 
 export const candidatarVaga = (vaga_id, aluno_id) =>
   api.post("/candidaturas", { vaga_id, aluno_id });

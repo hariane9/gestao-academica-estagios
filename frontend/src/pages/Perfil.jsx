@@ -22,9 +22,8 @@ function CampoInfo({ rotulo, valor }) {
 }
 
 function Perfil() {
-  const { role, perfil, isMobile, minhaEmpresa } = useApp();
+  const { role, perfil, isMobile } = useApp();
   const ehAluno = role === "aluno";
-  const ehEmpresa = role === "empresa";
 
   const campos = ehAluno
     ? [
@@ -37,14 +36,7 @@ function Perfil() {
         ["E-mail", perfil.email],
         ["Telefone", perfil.telefone]
       ]
-    : ehEmpresa
-      ? [
-          ["Nome comercial", minhaEmpresa?.nome_comercial || "Não cadastrado"],
-          ["CNPJ / NIF", minhaEmpresa?.nif || "Não cadastrado"],
-          ["Endereço", minhaEmpresa?.morada || "Não informado"],
-          ["E-mail", perfil.email]
-        ]
-      : [
+    : [
           ["Cargo", perfil.cargo],
           ["Registro", perfil.registro],
           ["Departamento", perfil.departamento],
@@ -91,11 +83,7 @@ function Perfil() {
               {perfil.nome}
             </div>
             <div style={{ fontSize: "14px", color: "#64748B" }}>
-              {ehAluno
-                ? `Matrícula ${perfil.matricula} · ${perfil.curso}`
-                : ehEmpresa
-                  ? minhaEmpresa?.nome_comercial || "Empresa parceira"
-                  : `${perfil.cargo} · ${perfil.registro}`}
+              {ehAluno ? `Matrícula ${perfil.matricula} · ${perfil.curso}` : `${perfil.cargo} · ${perfil.registro}`}
             </div>
           </div>
         </div>

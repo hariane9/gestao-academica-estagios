@@ -1,4 +1,3 @@
-import { Navigate } from "react-router-dom";
 import MainLayout from "../components/MainLayout";
 import Icon from "../components/Icon";
 import { useApp } from "../context/AppContext";
@@ -100,11 +99,6 @@ function Dashboard() {
     gap: "20px",
     marginBottom: "28px"
   };
-
-  // Empresa tem a própria página inicial
-  if (role === "empresa") {
-    return <Navigate to="/minhas-vagas" replace />;
-  }
 
   if (role === "supervisor") {
     const pendentes = candidaturasSupervisor.filter((c) => c.status === "Em análise").length;

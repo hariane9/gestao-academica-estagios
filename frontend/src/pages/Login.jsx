@@ -44,8 +44,8 @@ function Login() {
     }
     setEnviando(true);
     try {
-      const sessao = await login(email.trim(), senha, role);
-      navigate(sessao.tipo === "empresa" ? "/minhas-vagas" : "/dashboard");
+      await login(email.trim(), senha, role);
+      navigate("/dashboard");
     } catch (err) {
       if (err.response) {
         setErro(extrairErro(err, "E-mail ou senha inválidos."));
@@ -216,13 +216,6 @@ function Login() {
               style={estiloTab(role === "supervisor")}
             >
               Supervisor
-            </button>
-            <button
-              type="button"
-              onClick={() => setRole("empresa")}
-              style={estiloTab(role === "empresa")}
-            >
-              Empresa
             </button>
           </div>
 

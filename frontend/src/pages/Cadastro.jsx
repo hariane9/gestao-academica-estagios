@@ -8,8 +8,7 @@ const estiloInput = { width: "100%", padding: "13px 14px", borderRadius: "10px",
 
 const TIPOS = [
   { valor: "aluno", rotulo: "Estudante" },
-  { valor: "supervisor", rotulo: "Supervisor" },
-  { valor: "empresa", rotulo: "Empresa" }
+  { valor: "supervisor", rotulo: "Supervisor" }
 ];
 
 function Cadastro() {
