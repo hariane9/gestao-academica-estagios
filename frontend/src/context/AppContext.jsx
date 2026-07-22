@@ -256,7 +256,7 @@ export function AppProvider({ children }) {
       return false;
     }
     setDiario((ds) => [{ id: "d" + Date.now(), ...registro }, ...ds]);
-    showToast("Registro adicionado ao diário de bordo.");
+    showToast("Registro adicionado ao diário de campo.");
     return true;
   };
 
@@ -301,7 +301,7 @@ export function AppProvider({ children }) {
       }
     }
     setDiario((ds) => ds.filter((d) => d.id !== id));
-    showToast("Registro removido do diário.");
+    showToast("Registro removido do diário de campo.");
   };
 
   const addAvaliacao = async ({ alunoId, nota, feedback }) => {

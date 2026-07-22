@@ -11,7 +11,7 @@ function Header() {
     "/dashboard": "Dashboard",
     "/vagas": "Vagas Disponíveis",
     "/candidaturas": role === "supervisor" ? "Candidaturas Recebidas" : "Minhas Candidaturas",
-    "/diario": "Diário de Bordo",
+    "/diario": "Diário de Campo",
     "/avaliacoes": role === "supervisor" ? "Avaliações de Estagiários" : "Avaliações",
     "/estagiarios": "Estagiários",
     "/documentos": "Documentos",

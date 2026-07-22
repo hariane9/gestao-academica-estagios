@@ -3,6 +3,7 @@ import MainLayout from "../components/MainLayout";
 import Icon from "../components/Icon";
 import ModalNovoRegistro from "../components/ModalNovoRegistro";
 import { useApp } from "../context/AppContext";
+import { cronogramaEstagioProfessores } from "../services/mockData";
 
 const MESES = [
   "Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho",
@@ -45,12 +46,21 @@ function construirCalendario(diario) {
   return { rotuloMes: MESES[mes] + " " + ano, celulas };
 }
 
+function agruparCronogramaPorProfessor() {
+  return cronogramaEstagioProfessores.reduce((grupos, item) => {
+    if (!grupos[item.professor]) grupos[item.professor] = [];
+    grupos[item.professor].push(item);
+    return grupos;
+  }, {});
+}
+
 function DiarioBordo() {
   const { diario, isMobile, removerRegistroDiario } = useApp();
   const [modalAberto, setModalAberto] = useState(false);
   const [registroEditando, setRegistroEditando] = useState(null);
 
   const calendario = construirCalendario(diario);
+  const cronogramaPorProfessor = agruparCronogramaPorProfessor();
 
   return (
     <MainLayout>
@@ -155,68 +165,102 @@ function DiarioBordo() {
           </div>
         </div>
 
-        <div
-          style={{
-            background: "#fff",
-            border: "1px solid #E2E8F0",
-            borderRadius: "14px",
-            padding: "22px",
-            position: "sticky",
-            top: 0
-          }}
-        >
-          <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "16px" }}>
-            <Icon icon="calendar" size={18} color="#5C8600" />
-            <div style={{ fontSize: "15px", fontWeight: 800, color: "#1E293B" }}>{calendario.rotuloMes}</div>
-          </div>
+        <div style={{ position: "sticky", top: 0, display: "flex", flexDirection: "column", gap: "16px" }}>
+          <div
+            style={{
+              background: "#fff",
+              border: "1px solid #E2E8F0",
+              borderRadius: "14px",
+              padding: "22px"
+            }}
+          >
+            <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "16px" }}>
+              <Icon icon="calendar" size={18} color="#5C8600" />
+              <div style={{ fontSize: "15px", fontWeight: 800, color: "#1E293B" }}>{calendario.rotuloMes}</div>
+            </div>
 
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(7,1fr)", gap: "6px", marginBottom: "6px" }}>
-            {["D", "S", "T", "Q", "Q", "S", "S"].map((d, i) => (
-              <div key={i} style={{ textAlign: "center", fontSize: "11px", fontWeight: 700, color: "#94A3B8" }}>
-                {d}
-              </div>
-            ))}
-          </div>
-
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(7,1fr)", gap: "6px" }}>
-            {calendario.celulas.map((celula) =>
-              celula.vazia ? (
-                <div key={celula.chave} />
-              ) : (
-                <div
-                  key={celula.chave}
-                  style={{
-                    aspectRatio: "1",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    borderRadius: "8px",
-                    fontSize: "12.5px",
-                    fontWeight: 600,
-                    background: celula.bg,
-                    color: celula.cor
-                  }}
-                >
-                  {celula.dia}
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(7,1fr)", gap: "6px", marginBottom: "6px" }}>
+              {["D", "S", "T", "Q", "Q", "S", "S"].map((d, i) => (
+                <div key={i} style={{ textAlign: "center", fontSize: "11px", fontWeight: 700, color: "#94A3B8" }}>
+                  {d}
                 </div>
-              )
-            )}
+              ))}
+            </div>
+
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(7,1fr)", gap: "6px" }}>
+              {calendario.celulas.map((celula) =>
+                celula.vazia ? (
+                  <div key={celula.chave} />
+                ) : (
+                  <div
+                    key={celula.chave}
+                    style={{
+                      aspectRatio: "1",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      borderRadius: "8px",
+                      fontSize: "12.5px",
+                      fontWeight: 600,
+                      background: celula.bg,
+                      color: celula.cor
+                    }}
+                  >
+                    {celula.dia}
+                  </div>
+                )
+              )}
+            </div>
+
+            <div
+              style={{
+                marginTop: "18px",
+                paddingTop: "16px",
+                borderTop: "1px solid #F1F5F9",
+                display: "flex",
+                alignItems: "center",
+                gap: "8px",
+                fontSize: "12.5px",
+                color: "#64748B"
+              }}
+            >
+              <div style={{ width: "8px", height: "8px", borderRadius: "50%", background: "#5C8600" }} />
+              Dias com registro de atividade
+            </div>
           </div>
 
           <div
             style={{
-              marginTop: "18px",
-              paddingTop: "16px",
-              borderTop: "1px solid #F1F5F9",
-              display: "flex",
-              alignItems: "center",
-              gap: "8px",
-              fontSize: "12.5px",
-              color: "#64748B"
+              background: "#fff",
+              border: "1px solid #E2E8F0",
+              borderRadius: "14px",
+              padding: "22px"
             }}
           >
-            <div style={{ width: "8px", height: "8px", borderRadius: "50%", background: "#5C8600" }} />
-            Dias com registro de atividade
+            <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "16px" }}>
+              <Icon icon="book" size={18} color="#5C8600" />
+              <div style={{ fontSize: "15px", fontWeight: 800, color: "#1E293B" }}>Dias de estágio por professor</div>
+            </div>
+
+            <div style={{ display: "flex", flexDirection: "column", gap: "14px" }}>
+              {Object.entries(cronogramaPorProfessor).map(([professor, itens]) => (
+                <div key={professor} style={{ paddingBottom: "12px", borderBottom: "1px solid #F1F5F9" }}>
+                  <div style={{ fontSize: "13.5px", fontWeight: 800, color: "#1E293B", marginBottom: "8px" }}>
+                    {professor}
+                  </div>
+                  <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                    {itens.map((item, index) => (
+                      <div key={professor + index} style={{ fontSize: "12.5px", color: "#64748B", lineHeight: 1.45 }}>
+                        <strong style={{ color: "#475569" }}>{item.dia}</strong> ({item.turno})
+                        {item.cargaHoraria ? ` - ${item.cargaHoraria}` : ""}
+                        <br />
+                        {item.componente}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </div>

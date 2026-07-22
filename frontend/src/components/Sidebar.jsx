@@ -7,7 +7,7 @@ const itensAluno = [
   { path: "/dashboard", label: "Dashboard", icon: "home" },
   { path: "/vagas", label: "Vagas", icon: "briefcase" },
   { path: "/candidaturas", label: "Candidaturas", icon: "clipboard" },
-  { path: "/diario", label: "Diário de Bordo", icon: "book" },
+  { path: "/diario", label: "Diário de Campo", icon: "book" },
   { path: "/avaliacoes", label: "Avaliações", icon: "star" },
   { path: "/documentos", label: "Documentos", icon: "clipboardCheck" },
   { path: "/perfil", label: "Perfil", icon: "user" }

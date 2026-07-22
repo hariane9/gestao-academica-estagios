@@ -34,7 +34,7 @@ export const candidatarVaga = (vaga_id, aluno_id) =>
 export const obterEstagioAtual = (aluno_id) =>
   api.get("/estagio-atual", { params: { aluno_id } });
 
-// ---- Diário de bordo ----
+// ---- Diário de campo ----
 // GET devolve: { id, descricao, horas_dedicadas, data_registro }
 export const listarAtividades = (estagio_id) =>
   api.get("/atividades", { params: { estagio_id } });

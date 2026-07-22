@@ -79,7 +79,7 @@ function ModalNovoRegistro({ registro, onClose }) {
           }}
         >
           <div style={{ fontSize: "18px", fontWeight: 800, color: "#1E293B" }}>
-            {editando ? "Editar Registro" : "Novo Registro no Diário"}
+            {editando ? "Editar Registro" : "Novo Registro no Diário de Campo"}
           </div>
           <button
             type="button"
@@ -103,17 +103,17 @@ function ModalNovoRegistro({ registro, onClose }) {
         <label style={estiloLabel}>Data</label>
         <input type="text" value={form.data} onChange={atualizar("data")} placeholder="DD/MM/AAAA" style={estiloInput} />
 
-        <label style={estiloLabel}>Atividade</label>
-        <input type="text" value={form.atividade} onChange={atualizar("atividade")} placeholder="Ex: Reunião de alinhamento" style={estiloInput} />
+        <label style={estiloLabel}>Atividade realizada no dia</label>
+        <input type="text" value={form.atividade} onChange={atualizar("atividade")} placeholder="Ex: Administração de medicamentos supervisionada" style={estiloInput} />
 
         <label style={estiloLabel}>Horas dedicadas (1 a 8)</label>
         <input type="number" min="1" max="8" value={form.horas} onChange={atualizar("horas")} placeholder="Ex: 4" style={estiloInput} />
 
-        <label style={estiloLabel}>Descrição</label>
+        <label style={estiloLabel}>Reflexões / o que aprendeu</label>
         <textarea
           value={form.descricao}
           onChange={atualizar("descricao")}
-          placeholder="Descreva as atividades realizadas..."
+          placeholder="Descreva o que fez, o que observou e o que aprendeu no campo de estágio..."
           rows={3}
           style={{ ...estiloInput, marginBottom: "22px", resize: "vertical" }}
         />

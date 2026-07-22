@@ -140,7 +140,7 @@ function Login() {
               Conectando estudantes a oportunidades reais de mercado.
             </div>
             <div style={{ fontSize: "15px", lineHeight: 1.6, color: "#DDEFE0" }}>
-              Acompanhe candidaturas, registre seu diário de bordo e receba avaliações de desempenho — tudo em
+              Acompanhe candidaturas, registre seu diário de campo e receba avaliações de desempenho — tudo em
               um só lugar.
             </div>
           </div>

@@ -26,6 +26,25 @@ export const diario = [
   { id: "d6", data: "19/06/2026", atividade: "Reunião com cliente", horas: "2", descricao: "Apresentação do progresso do projeto para o supervisor da empresa." }
 ];
 
+export const cronogramaEstagioProfessores = [
+  { professor: "Carla", componente: "Estágio Curricular Supervisionado I", dia: "Segunda-feira", turno: "T", cargaHoraria: "4h" },
+  { professor: "Carla", componente: "Estágio Curricular Supervisionado I", dia: "Terça-feira", turno: "M", cargaHoraria: "4h" },
+  { professor: "Edivânia", componente: "Estágio Curricular Supervisionado I", dia: "Quarta-feira", turno: "M", cargaHoraria: "4h" },
+  { professor: "Edivânia", componente: "Estágio Curricular Supervisionado I", dia: "Quarta-feira", turno: "T", cargaHoraria: "4h" },
+  { professor: "Daniele", componente: "Estágio Curricular Supervisionado II", dia: "Terça-feira", turno: "T", cargaHoraria: "5h" },
+  { professor: "Daniele", componente: "Estágio Curricular Supervisionado III", dia: "Segunda-feira", turno: "T", cargaHoraria: "" },
+  { professor: "Rayssa", componente: "Estágio Curricular Supervisionado II", dia: "Quinta-feira", turno: "T", cargaHoraria: "5h" },
+  { professor: "Rayssa", componente: "Estágio Curricular Supervisionado III", dia: "Terça-feira", turno: "T", cargaHoraria: "" },
+  { professor: "Rita", componente: "Estágio Curricular Supervisionado II", dia: "Terça-feira", turno: "M", cargaHoraria: "5h" },
+  { professor: "Rita", componente: "Estágio Curricular Supervisionado IV - diurno", dia: "Quinta-feira", turno: "M", cargaHoraria: "5h" },
+  { professor: "Rita", componente: "Estágio Curricular Supervisionado IV - noturno", dia: "Quarta-feira", turno: "N", cargaHoraria: "4h" },
+  { professor: "Rita", componente: "Estágio Curricular Supervisionado IV - noturno", dia: "Quinta-feira", turno: "N", cargaHoraria: "4h" },
+  { professor: "Isa", componente: "Estágio Curricular Supervisionado II", dia: "Quarta-feira", turno: "M", cargaHoraria: "5h" },
+  { professor: "Isa", componente: "Estágio Curricular Supervisionado IV - noturno", dia: "Quinta-feira", turno: "N", cargaHoraria: "4h" },
+  { professor: "Edjaclécio", componente: "Estágio Curricular Supervisionado IV - diurno", dia: "Quarta-feira", turno: "T", cargaHoraria: "5h" },
+  { professor: "Daiane", componente: "Estágio Curricular Supervisionado IV - noturno", dia: "Quarta-feira", turno: "N", cargaHoraria: "4h" }
+];
+
 export const avaliacoesAluno = [
   { id: "a1", periodo: "Junho 2026", supervisor: "Prof. Ricardo Andrade Melo", nota: 9.2, feedback: "Excelente desempenho técnico e proatividade na resolução de problemas. Manteve boa comunicação com a equipe.", data: "30/06/2026" },
   { id: "a2", periodo: "Maio 2026", supervisor: "Prof. Ricardo Andrade Melo", nota: 8.7, feedback: "Bom domínio das tecnologias utilizadas. Pode melhorar a pontualidade na entrega de tarefas.", data: "31/05/2026" },
