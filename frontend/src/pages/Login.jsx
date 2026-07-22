@@ -137,7 +137,7 @@ function Login() {
               Sistema de Gestão de Estágios
             </div>
             <div style={{ fontSize: "34px", fontWeight: 800, lineHeight: 1.25, marginBottom: "20px" }}>
-              Conectando estudantes a oportunidades reais de mercado.
+              Acompanhamento acadêmico do Estágio Curricular Supervisionado em um só lugar.
             </div>
             <div style={{ fontSize: "15px", lineHeight: 1.6, color: "#DDEFE0" }}>
               Acompanhe candidaturas, registre seu diário de campo e receba avaliações de desempenho — tudo em
@@ -145,20 +145,7 @@ function Login() {
             </div>
           </div>
 
-          <div style={{ position: "relative", zIndex: 2, display: "flex", gap: "32px", color: "#fff" }}>
-            <div>
-              <div style={{ fontSize: "26px", fontWeight: 800 }}>1.240+</div>
-              <div style={{ fontSize: "13px", color: "#CDEAD1" }}>Estagiários ativos</div>
-            </div>
-            <div>
-              <div style={{ fontSize: "26px", fontWeight: 800 }}>380+</div>
-              <div style={{ fontSize: "13px", color: "#CDEAD1" }}>Empresas parceiras</div>
-            </div>
-            <div>
-              <div style={{ fontSize: "26px", fontWeight: 800 }}>96%</div>
-              <div style={{ fontSize: "13px", color: "#CDEAD1" }}>Satisfação</div>
-            </div>
-          </div>
+          <div />
         </div>
       )}
 
